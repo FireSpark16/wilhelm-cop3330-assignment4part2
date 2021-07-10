@@ -1,0 +1,71 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Todo {
+    main()
+    start()
+}
+
+class TodoController {
+    textOutput: TextField
+    textInput: TextField
+    textCornerBox: TextField
+    selectedListView: ListView
+
+    createNewListClicked();
+    loadListClicked();
+    saveListClicked();
+    helpClicked();
+    editListNameClicked();
+    editItemDescriptionClicked();
+    editItemDueDateClicked();
+    displayAllItemsClicked();
+    displayCompletedItemsClicked();
+    displayIncompleteItemsClicked();
+    markAsCompleteClicked();
+    markAsIncompleteClicked();
+    addItemClicked();
+    deleteItemClicked();
+    submitClicked();
+
+    useTextOutput();
+    useTextInput();
+    useCornerBox();
+    useSelectedListView();
+    createNewList();
+    loadList();
+    saveList();
+    help();
+    editListName();
+    editItemDescription();
+    editItemDueDate();
+    displayAllItems();
+    displayCompletedItems();
+    displayIncompleteItems();
+    markAsComplete();
+    markAsIncomplete();
+    addItem();
+    deleteItem();
+    submit();
+}
+
+
+
+class TodoList {
+    string listName;
+    ObservableList todoList;
+    //composed of TodoItems
+}
+
+class TodoItem {
+    string description;
+    string dueDate;
+    boolean completed;
+}
+
+javafx.application <|-- Todo
+Todo -- TodoController
+TodoController -- TodoList
+TodoList -- TodoItem
+
+@enduml

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ucf.assignments.TodoController">
+   <children>
+      <ListView fx:id="listViewDescriptions" layoutX="450.0" layoutY="51.0" onMouseClicked="#itemDescriptionClicked" prefHeight="350.0" prefWidth="150.0" />
+      <TextField fx:id="cornerBox" alignment="CENTER" editable="false" layoutX="290.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="51.0" prefWidth="310.0" text="ToDo Builder">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </TextField>
+      <GridPane prefHeight="400.0" prefWidth="290.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <MenuButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Set" wrapText="true" GridPane.columnIndex="3" GridPane.rowIndex="2">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#setListNameClicked" text="Set as List Name" />
+                  <MenuItem mnemonicParsing="false" onAction="#setItemDescriptionClicked" text="Set as Item Description" />
+                  <MenuItem mnemonicParsing="false" onAction="#setItemDueDateClicked" text="Set as Item Due Date" />
+               </items>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="10.0" top="5.0" />
+               </GridPane.margin>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </MenuButton>
+            <MenuButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Mark" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="3">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#markAsCompleteClicked" text="Mark as Completed" />
+                  <MenuItem mnemonicParsing="false" onAction="#markAsIncompleteClicked" text="Mark as Incompleted" />
+               </items>
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+            </MenuButton>
+            <MenuButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" popupSide="TOP" text="Edit" wrapText="true" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#editListNameClicked" text="Edit Todo List Name" />
+                  <MenuItem mnemonicParsing="false" onAction="#editItemDescriptionClicked" text="Edit Item Description" />
+                  <MenuItem mnemonicParsing="false" onAction="#editItemDueDateClicked" text="Edit Item Due Date" />
+               </items>
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="5.0" right="10.0" top="5.0" />
+               </GridPane.margin>
+            </MenuButton>
+            <MenuButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Display" wrapText="true" GridPane.columnSpan="2" GridPane.rowIndex="3">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#displayAllItemsClicked" text="Show All Items" />
+                  <MenuItem mnemonicParsing="false" onAction="#displayCompletedItemsClicked" text="Show Completed Items" />
+                  <MenuItem mnemonicParsing="false" onAction="#displayIncompleteItemsClicked" text="Show Incompleted Items" />
+               </items>
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+            </MenuButton>
+            <MenuButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Item" wrapText="true" GridPane.columnIndex="3" GridPane.rowIndex="3">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#addItemClicked" text="Add Item" />
+                  <MenuItem mnemonicParsing="false" onAction="#deleteItemClicked" text="Delete Item" />
+               </items>
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="5.0" right="10.0" top="5.0" />
+               </GridPane.margin>
+            </MenuButton>
+            <TextField fx:id="textInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Type Something Here" GridPane.columnSpan="3" GridPane.rowIndex="2">
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+            </TextField>
+            <TextArea fx:id="textOutput" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="275.0" text="Welcome to ToDo Builder!" wrapText="true" GridPane.columnSpan="4" GridPane.rowSpan="2">
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
+               </GridPane.margin>
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </TextArea>
+            <MenuButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" popupSide="TOP" text="File" wrapText="true" GridPane.columnSpan="2" GridPane.rowIndex="4">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#createNewListClicked" text="New Todo List" />
+                  <MenuItem mnemonicParsing="false" onAction="#loadListClicked" text="Load Todo List" />
+                  <MenuItem mnemonicParsing="false" onAction="#saveListClicked" text="Save Todo List" />
+                  <MenuItem mnemonicParsing="false" onAction="#helpClicked" text="Need Help?" />
+              </items>
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+            </MenuButton>
+         </children>
+      </GridPane>
+      <ListView fx:id="listViewDueDates" layoutX="290.0" layoutY="51.0" onMouseClicked="#itemDueDateClicked" prefHeight="350.0" prefWidth="80.0" />
+      <ListView fx:id="listViewCompletedStatus" layoutX="370.0" layoutY="51.0" onMouseClicked="#itemCompletedStatusClicked" prefHeight="350.0" prefWidth="80.0" />
+   </children>
+</AnchorPane>
