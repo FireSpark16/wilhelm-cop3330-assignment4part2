@@ -12,6 +12,13 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
 
 public class TodoController {
     TodoList todoList;
@@ -40,8 +47,8 @@ public class TodoController {
 
     @FXML
     public void loadListClicked(ActionEvent actionEvent) {
-        //calls loadList()
-        loadList();
+        //calls loadList(actionEvent)
+        loadList(actionEvent);
     }
 
     @FXML
@@ -180,27 +187,60 @@ public class TodoController {
         setTextOutput("What would you like to name your list?\n(Select \"Set as List Name\" when ready)");
     }
 
-    public void loadList() {
-
-        // Prompt user for list name
-        // Wait for submit to be pressed
-        // Get text from textInput
-        // Check directory for list name
-        // If found, read it
-        // Assign values from .txt file to new lists using createNewList()
-
+    public void loadList(ActionEvent actionEvent) {
+        // Create a FileChooser
+        FileChooser fileChooser = new FileChooser();
+        // Create a file that the fileChooser will give a file to
+        File selectedFile = fileChooser.showOpenDialog(textOutput.getScene().getWindow());
+        // Create a scanner
+        try {
+            Scanner input = new Scanner(selectedFile);
+            // Create a new list
+            todoList = new TodoList();
+            // Add the list name
+            String fileWithExtension = selectedFile.getName();
+            String fileWithoutExtension = fileWithExtension.replaceFirst("[.][^.]+$", "");
+            todoList.listName = fileWithoutExtension;
+            // Create a counter
+            int count = 0;
+            while(input.hasNextLine())
+            {
+                // read each line from the data and assign it as necessary
+                TodoList.TodoItem todoItem = todoList.new TodoItem();
+                todoList.todoObservableList.add(todoItem);
+                todoList.todoObservableList.get(count).dueDate = input.nextLine();
+                todoList.todoObservableList.get(count).completedStatus = input.nextLine();
+                todoList.todoObservableList.get(count).description = input.nextLine();
+                count++;
+            }
+            // Alert user
+            setTextOutput("List \"" + fileWithoutExtension + "\" successfully loaded.");
+        } catch (FileNotFoundException e) {
+            setTextOutput("A file with that name could not be found.");
+        }
+        updateDisplay();
     }
 
     public void saveList() {
-
-        // Prompt user for list they want to save
-        // Wait for submit to be pressed
-        // Get text from textInput
-        // Check current lists to see if name exists
-        // If found, create a new file named [listName].txt
-        // Print list name to new file
-        // Print item values to list, separated by new lines
-
+        // Create a FileChooser
+        FileChooser fileChooser = new FileChooser();
+        // Create a file
+        fileChooser.setInitialFileName(todoList.listName + ".txt");
+        File newFile = fileChooser.showSaveDialog(textOutput.getScene().getWindow());
+        // Create a FileWriter
+        try {
+            FileWriter myWriter = new FileWriter(newFile);
+            // Format data to new file
+            for(int i = 0; i < todoList.todoObservableList.size(); i++)
+            {
+                myWriter.write(todoList.todoObservableList.get(i).dueDate + "\n");
+                myWriter.write(todoList.todoObservableList.get(i).completedStatus + "\n");
+                myWriter.write(todoList.todoObservableList.get(i).description + "\n");
+            }
+            myWriter.close();
+        } catch (IOException e) {
+            setTextOutput("Error Saving File.");
+        }
     }
 
     public void help() {
@@ -363,6 +403,7 @@ public class TodoController {
             todoList.todoObservableList.get(todoList.todoObservableList.indexOf(selected)).completedStatus = "Complete";
             setTextOutput("Marked \"" + todoList.todoObservableList.get(todoList.todoObservableList.indexOf(selected)).description + "\" as Complete");
         }
+        deselect();
         updateDisplay();
     }
 
@@ -374,6 +415,7 @@ public class TodoController {
             todoList.todoObservableList.get(todoList.todoObservableList.indexOf(selected)).completedStatus = "Incomplete";
             setTextOutput("Marked \"" + todoList.todoObservableList.get(todoList.todoObservableList.indexOf(selected)).description + "\" as Incomplete");
         }
+        deselect();
         updateDisplay();
     }
 
@@ -477,7 +519,7 @@ public class TodoController {
         }
         else
         {
-            setTextOutput("Please select an item from the list first.\nIf you already have, please also ensure you set your item description and due date first before you attempt to edit them.");
+            setTextOutput("Please select an item from the list first.");
             return false;
         }
     }
@@ -536,6 +578,9 @@ public class TodoController {
             default:
                 throw new IllegalStateException("Unexpected value: " + i);
         }
+        listViewDescriptions.getSelectionModel().select(selectedIndex);
+        listViewDueDates.getSelectionModel().select(selectedIndex);
+        listViewCompletedStatus.getSelectionModel().select(selectedIndex);
         selected = todoList.todoObservableList.get(selectedIndex);
     }
 
@@ -558,4 +603,5 @@ public class TodoController {
     private void deselect() {
         selected = null;
     }
+
 }
