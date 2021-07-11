@@ -218,48 +218,67 @@ public class TodoController {
 
     public void editListName() {
 
-        // Check if list is opened
-        // If so, prompt user for new list name via textOutput
-        // Wait for submit to be pressed
-        // Get text from textInput
-        // Change list name to new name
+        // Check if list is opened and an item is selected
+        if(listExists())
+        {
+            // Prompt for change in input
+            setTextOutput("Edit your list name.\n(Select \"Set as List Name\" when ready)");
+            // Set textInput to previous description
+            setTextInput(todoList.listName);
+        }
 
     }
 
     public void editItemDescription() {
+        // Check if list is opened and an item is selected
+        if(listExists() && itemIsSelected() && !selectedDescriptionIsBlank())
+        {
+            // Prompt for change in input
+            setTextOutput("Edit your description.\n(Select \"Set as Item Description\" when ready)");
+            // Set textInput to previous description
+            setTextInput(selected.description);
+        }
+    }
 
-        // Check if list is opened
-        // Check if item is selected
-        // If so, prompt user for new item description via textOutput
-        // Wait for submit to be pressed
-        // Get text from textInput
-        // Change item description to new description
+    private boolean selectedDescriptionIsBlank() {
+        if (selected.description.equals("(blank)"))
+        {
+            setTextOutput("Please add your description first.");
+            deselect();
+            return true;
+        }
+        else
+            return false;
+    }
 
+    private boolean selectedDueDateIsBlank() {
+        if (selected.dueDate.equals("(blank)"))
+        {
+            setTextOutput("Please add your due date first.");
+            deselect();
+            return true;
+        }
+        else
+            return false;
     }
 
     public void editItemDueDate() {
-
-        // Check if list is opened
-        // Check if item is selected
-        // If so, prompt user for new item due date via textOutput
-        // Wait for submit to be pressed
-        // Get text from textInput
-        // Change item due date to new due date
-
+        // Check if list is opened and an item is selected
+        if(listExists() && itemIsSelected() && !selectedDueDateIsBlank())
+        {
+            // Prompt for change in input
+            setTextOutput("Edit your due date.\n(Select \"Set as Item Due Date\" when ready)");
+            // Set textInput to previous description
+            setTextInput(selected.dueDate);
+        }
     }
 
     public void updateDisplay() {
         // get current display model and show updated information
-        switch(currentDisplayModel) {
-            case 1:
-                displayAllItems();
-                break;
-            case 2:
-                displayCompletedItems();
-                break;
-            case 3:
-                displayIncompleteItems();
-                break;
+        switch (currentDisplayModel) {
+            case 1 -> displayAllItems();
+            case 2 -> displayCompletedItems();
+            case 3 -> displayIncompleteItems();
         }
     }
 
@@ -338,7 +357,7 @@ public class TodoController {
 
     public void markAsComplete() {
         // Check if list is opened and an item is selected
-        if(listExists() && selected != null)
+        if(listExists() && itemIsSelected())
         {
             // If so, set item's completed value to Complete
             todoList.todoObservableList.get(todoList.todoObservableList.indexOf(selected)).completedStatus = "Complete";
@@ -349,7 +368,7 @@ public class TodoController {
 
     public void markAsIncomplete() {
         // Check if list is opened and an item is selected
-        if(listExists() && selected != null)
+        if(listExists() && itemIsSelected())
         {
             // If so, set item's completed value to Incomplete
             todoList.todoObservableList.get(todoList.todoObservableList.indexOf(selected)).completedStatus = "Incomplete";
@@ -362,27 +381,47 @@ public class TodoController {
         // Check if list is opened
         if(listExists())
         {
-            // If so, create new instance of todoItem
-            TodoList.TodoItem todoItem = todoList.new TodoItem();
-            // Add the item to the list
-            todoList.todoObservableList.add(todoItem);
-            // Prompt for description and due date
-            setTextOutput("Please add a description for your item.\n(Select \"Set as Item Description\" when ready)\nPlease add a due date for your item (MM/DD/YYYY).\n(Select \"Set as Item Due Date\" when ready)");
+            // Explanation: First, see if list has 1 or more items. If so, then see that they aren't blank. I would include these in the same step, but then
+            // it would cause the program to possibly check an index that does not exist. Instead, only if there are items will it check if they are blank.
+            // If they are not blank, or if there are no items in the list then make a new item. Otherwise, prompt them to and don't make a new item.
+            if(todoList.todoObservableList.size() >= 1)
+            {
+                if (todoList.todoObservableList.get(todoList.todoObservableList.size() - 1).description.equals("(blank)") || todoList.todoObservableList.get(todoList.todoObservableList.size() - 1).dueDate.equals("(blank)"))
+                {
+                    setTextOutput("Please ensure your description and due date are not blank before continuing.");
+                }
+                else {
+                    // If so, create new instance of todoItem
+                    TodoList.TodoItem todoItem = todoList.new TodoItem();
+                    // Add the item to the list
+                    todoList.todoObservableList.add(todoItem);
+                    // Clear selected (if any are)
+                    deselect();
+                    // Prompt for description and due date
+                    setTextOutput("Please add a description for your item.\n(Select \"Set as Item Description\" when ready)\nPlease add a due date for your item (MM/DD/YYYY).\n(Select \"Set as Item Due Date\" when ready)");
+                }
+            } else {
+                // If so, create new instance of todoItem
+                TodoList.TodoItem todoItem = todoList.new TodoItem();
+                // Add the item to the list
+                todoList.todoObservableList.add(todoItem);
+                // Clear selected (if any are)
+                deselect();
+                // Prompt for description and due date
+                setTextOutput("Please add a description for your item.\n(Select \"Set as Item Description\" when ready)\nPlease add a due date for your item (MM/DD/YYYY).\n(Select \"Set as Item Due Date\" when ready)");
+            }
         }
         updateDisplay();
     }
 
     public void deleteItem() {
-
-        // Check if list is opened
-        // Check if item is selected
-        // If so, prompt user for the item they wish to delete via textOutput
-        // Wait for submit to be pressed
-        // Get text from textInput
-        // Check for an item that matches the string
-        // If found, delete
-        // If deleted, display deletion message using textOutput
-
+        // Check if list is opened and an item is selected
+        if(listExists() && itemIsSelected())
+        {
+            // Remove item from list
+            todoList.todoObservableList.remove(selected);
+        }
+        updateDisplay();
     }
 
     private void setListName() {
@@ -395,7 +434,10 @@ public class TodoController {
             // Set todoList title to this input
             todoList.listName = input;
             // Alert user to list creation
-            setTextOutput("List \"" + todoList.listName + "\" successfully created.");
+            if(todoList.todoObservableList.size() == 0)
+                setTextOutput("List \"" + todoList.listName + "\" successfully created.\nAdd an item using Item --> Add Item");
+            else
+                setTextOutput("List \"" + todoList.listName + "\" successfully renamed.");
         }
         updateDisplay();
     }
@@ -403,16 +445,41 @@ public class TodoController {
     private void setItemDescription() {
         // Check if list is opened
         if(listExists()) {
+            // Get user input
             String input = getTextInput();
             // Clear textInput
             clearTextInput();
-            // Grab last item in list and assign it the input
-            int itemNumber = todoList.todoObservableList.size();
-            todoList.todoObservableList.get(itemNumber - 1).description = input;
-            // Alert user to list creation
-            setTextOutput("Item description \"" + todoList.todoObservableList.get(itemNumber - 1).description + "\" successfully added.");
+            // Use selected if one is, or else assign it to new item
+            if(itemIsSelected() && !selectedDescriptionIsBlank()) {
+                // Update selected item's description
+                todoList.todoObservableList.get(todoList.todoObservableList.indexOf(selected)).description = input;
+                // Alert user to list edit
+                setTextOutput("Item description \"" + todoList.todoObservableList.get(todoList.todoObservableList.indexOf(selected)).description + "\" successfully changed.");
+            }
+            else
+            {
+                // Grab last item in list and assign it the input
+                int itemNumber = todoList.todoObservableList.size();
+                todoList.todoObservableList.get(itemNumber - 1).description = input;
+                // Alert user to list creation
+                setTextOutput("Item description \"" + todoList.todoObservableList.get(itemNumber - 1).description + "\" successfully added.");
+            }
+            // Deselect
+            deselect();
         }
         updateDisplay();
+    }
+
+    private boolean itemIsSelected() {
+        if (selected != null)
+        {
+            return true;
+        }
+        else
+        {
+            setTextOutput("Please select an item from the list first.\nIf you already have, please also ensure you set your item description and due date first before you attempt to edit them.");
+            return false;
+        }
     }
 
     private void setItemDueDate() {
@@ -421,11 +488,23 @@ public class TodoController {
             String input = getTextInput();
             // Clear textInput
             clearTextInput();
-            // Grab last item in list and assign it the input
-            int itemNumber = todoList.todoObservableList.size();
-            todoList.todoObservableList.get(itemNumber - 1).dueDate = input;
-            // Alert user to list creation
-            setTextOutput("Item due date \"" + todoList.todoObservableList.get(itemNumber - 1).dueDate + "\" successfully added.");
+            // Use selected if one is, or else assign it to new item
+            if(itemIsSelected() && !selectedDueDateIsBlank()) {
+                // Update selected item's due date
+                todoList.todoObservableList.get(todoList.todoObservableList.indexOf(selected)).dueDate = input;
+                // Alert user to list edit
+                setTextOutput("Item due date \"" + todoList.todoObservableList.get(todoList.todoObservableList.indexOf(selected)).dueDate + "\" successfully changed.");
+            }
+            else
+            {
+                // Grab last item in list and assign it the input
+                int itemNumber = todoList.todoObservableList.size();
+                todoList.todoObservableList.get(itemNumber - 1).dueDate = input;
+                // Alert user to list creation
+                setTextOutput("Item due date \"" + todoList.todoObservableList.get(itemNumber - 1).dueDate + "\" successfully added.");
+            }
+            // Deselect
+            deselect();
         }
         updateDisplay();
     }
@@ -458,7 +537,6 @@ public class TodoController {
                 throw new IllegalStateException("Unexpected value: " + i);
         }
         selected = todoList.todoObservableList.get(selectedIndex);
-        System.out.println(todoList.todoObservableList.indexOf(selected));
     }
 
     private boolean listExists() {
@@ -476,7 +554,8 @@ public class TodoController {
         System.out.println("It missed the try catch.");
         return false;
     }
-
-
-
+    
+    private void deselect() {
+        selected = null;
+    }
 }
